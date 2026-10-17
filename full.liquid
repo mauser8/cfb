@@ -1,0 +1,97 @@
+{% if events.size == 0 %}
+  <div class="view view--full">
+    <div class="layout layout--center">
+      <span class="title">No games this week</span>
+    </div>
+  </div>
+{% else %}
+{% assign game = events[0] %}
+{% assign matchup = game.competitions[0].competitors %}
+
+<div class="mashup mashup--1Tx1B">
+  <div class="view view--half_horizontal">
+    <div class="layout">
+      <div class="title-bar">
+        <span class="title">College Football · Week {{ week.number }}</span>
+      </div>
+      <div class="flex flex--row flex--center-x">
+        <div class="flex flex--row">
+          <div class="">
+            <img src="{{ matchup[0].team.logo }}" alt="{{ matchup[0].team.displayName }}" width="90">
+            <div><strong>{% if matchup[0].rank %}#{{ matchup[0].rank }} {% endif %}{{ matchup[0].team.displayName }}</strong></div>
+            <div><small>{{ matchup[0].records[0].summary }}</small></div>
+            <div><em>{{ matchup[0].homeAway | capitalize }}</em></div>
+          </div>
+          <div class="col">
+            <div class="row row--center">
+              {% if game.status.type.state == "in" %}
+                <span class="value value--large">{{ matchup[0].score }}-{{ matchup[1].score }}</span>
+                <div class="status">{{ game.status.type.shortDetail }}</div>
+              {% else %}
+                <span class="value value--small">{{ game.status.type.shortDetail }}</span>
+              {% endif %}
+            </div>
+            {% if game.broadcast %}
+              <div class="row row--center"><small>{{ game.broadcast }}</small></div>
+            {% endif %}
+          </div>
+          <div class="">
+            <img src="{{ matchup[1].team.logo }}" alt="{{ matchup[1].team.displayName }}" width="90">
+            <div><strong>{% if matchup[1].rank %}#{{ matchup[1].rank }} {% endif %}{{ matchup[1].team.displayName }}</strong></div>
+            <div><small>{{ matchup[1].records[0].summary }}</small></div>
+            <div><em>{{ matchup[1].homeAway | capitalize }}</em></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="view view--half_horizontal">
+    <div class="layout">
+      {% assign rest = events | slice:1,10 %}
+      <div class="grid grid--cols-2">
+        <div>
+          {% for game in rest limit:5 %}
+            {% assign teams = game.competitions[0].competitors %}
+            <div class="row">
+              {% for team in teams %}
+                <div class="col col-6 layout--center">
+                  <img src="{{ team.team.logo }}" alt="{{ team.team.displayName }}" width="22">
+                  <div><small>{% if team.rank %}#{{ team.rank }} {% endif %}{{ team.team.abbreviation }}</small></div>
+                </div>
+              {% endfor %}
+              <div class="col">
+                {% if game.status.type.state == "in" %}
+                  <small>{{ teams[0].score }}-{{ teams[1].score }}</small>
+                {% else %}
+                  <small>{{ game.status.type.shortDetail }}</small>
+                {% endif %}
+              </div>
+            </div>
+          {% endfor %}
+        </div>
+        <div>
+          {% for game in rest offset:5 %}
+            {% assign teams = game.competitions[0].competitors %}
+            <div class="row">
+              {% for team in teams %}
+                <div class="col col-6 layout--center">
+                  <img src="{{ team.team.logo }}" alt="{{ team.team.displayName }}" width="22">
+                  <div><small>{% if team.rank %}#{{ team.rank }} {% endif %}{{ team.team.abbreviation }}</small></div>
+                </div>
+              {% endfor %}
+              <div class="col">
+                {% if game.status.type.state == "in" %}
+                  <small>{{ teams[0].score }}-{{ teams[1].score }}</small>
+                {% else %}
+                  <small>{{ game.status.type.shortDetail }}</small>
+                {% endif %}
+              </div>
+            </div>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endif %}
