@@ -1,0 +1,13 @@
+---
+name: College Football
+description: FBS scores this week
+strategy: polling
+polling_verb: get
+# Tiny dummy URL. ESPN is too large (~1MB) and often 403s TRMNL's poller.
+# src/transform.py fetches and trims the scoreboard instead.
+polling_url: https://raw.githubusercontent.com/mauser8/cfb/main/docs/schedule.json
+polling_headers: ''
+no_screen_padding: 'no'
+dark_mode: 'no'
+refresh_interval: 15
+serverless_language: python

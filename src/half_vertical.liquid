@@ -1,0 +1,35 @@
+{% if games.size == 0 %}
+  <div class="layout layout--center">
+    <span class="label">{{ error | default: "No games this week" }}</span>
+  </div>
+  <div class="title_bar">
+    <span class="title">CFB</span>
+  </div>
+{% else %}
+  {% assign featured = games.first %}
+  <div class="layout layout--col">
+    <div class="flex flex--row flex--center-x flex--center-y">
+      <span class="label">
+        {% if featured.away.rank %}#{{ featured.away.rank }} {% endif %}{{ featured.away.abbr }}
+      </span>
+      <span class="value value--small">
+        {% if featured.state == "pre" %}{{ featured.detail }}{% else %}{{ featured.away.score }}-{{ featured.home.score }}{% endif %}
+      </span>
+      <span class="label">
+        {% if featured.home.rank %}#{{ featured.home.rank }} {% endif %}{{ featured.home.abbr }}
+      </span>
+    </div>
+    {% for game in games offset: 1 limit: 6 %}
+      <div class="grid grid--cols-2">
+        <span class="label label--small">{{ game.away.abbr }} @ {{ game.home.abbr }}</span>
+        <span class="label label--small">
+          {% if game.state == "pre" %}{{ game.detail }}{% else %}{{ game.away.score }}-{{ game.home.score }}{% endif %}
+        </span>
+      </div>
+    {% endfor %}
+  </div>
+  <div class="title_bar">
+    <span class="title">CFB</span>
+    <span class="instance">Wk {{ week_number }}</span>
+  </div>
+{% endif %}

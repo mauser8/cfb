@@ -1,0 +1,17 @@
+---
+watch:
+  - src
+  - .trmnlp.yml
+
+time_zone: America/New_York
+
+custom_fields: {}
+
+transform_runtime: enabled
+
+variables:
+  trmnl:
+    user:
+      name: CFB Fan
+    plugin_settings:
+      instance_name: College Football

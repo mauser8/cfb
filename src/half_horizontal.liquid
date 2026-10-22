@@ -1,0 +1,31 @@
+{% if games.size == 0 %}
+  <div class="layout layout--center">
+    <span class="label">{{ error | default: "No games this week" }}</span>
+  </div>
+  <div class="title_bar">
+    <span class="title">College Football</span>
+  </div>
+{% else %}
+  <div class="layout">
+    <div class="grid grid--cols-2">
+      {% for game in games limit: 6 %}
+        <div class="grid grid--cols-4">
+          <span class="label">
+            {% if game.away.rank %}#{{ game.away.rank }} {% endif %}{{ game.away.abbr }}
+          </span>
+          <span class="description">@</span>
+          <span class="label">
+            {% if game.home.rank %}#{{ game.home.rank }} {% endif %}{{ game.home.abbr }}
+          </span>
+          <span class="label label--small">
+            {% if game.state == "pre" %}{{ game.detail }}{% else %}{{ game.away.score }}-{{ game.home.score }}{% endif %}
+          </span>
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+  <div class="title_bar">
+    <span class="title">College Football</span>
+    <span class="instance">Week {{ week_number }}</span>
+  </div>
+{% endif %}

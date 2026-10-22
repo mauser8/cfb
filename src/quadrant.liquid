@@ -1,0 +1,27 @@
+{% if games.size == 0 %}
+  <div class="layout layout--center">
+    <span class="label">No games</span>
+  </div>
+  <div class="title_bar">
+    <span class="title">CFB</span>
+  </div>
+{% else %}
+  <div class="layout layout--col">
+    {% for game in games limit: 4 %}
+      <div class="grid grid--cols-2">
+        <span class="label label--small">
+          {% if game.away.rank %}#{{ game.away.rank }} {% endif %}{{ game.away.abbr }}
+          @
+          {% if game.home.rank %}#{{ game.home.rank }} {% endif %}{{ game.home.abbr }}
+        </span>
+        <span class="label label--small">
+          {% if game.state == "pre" %}{{ game.detail }}{% else %}{{ game.away.score }}-{{ game.home.score }}{% endif %}
+        </span>
+      </div>
+    {% endfor %}
+  </div>
+  <div class="title_bar">
+    <span class="title">CFB</span>
+    <span class="instance">Wk {{ week_number }}</span>
+  </div>
+{% endif %}
