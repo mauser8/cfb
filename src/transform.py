@@ -27,7 +27,9 @@ HEADERS = {
 }
 
 MAX_GAMES = 12
-FETCH_TIMEOUT = 3.5
+# TRMNL serverless is killed at 5s. Two 3.5s ESPN attempts used to exceed that
+# and mark the plugin "unable to refresh" even when GitHub already had scores.
+FETCH_TIMEOUT = 2.0
 
 
 def _get(url):
@@ -43,6 +45,8 @@ def fetch():
             return _get(url)
         except (urllib.error.URLError, urllib.error.HTTPError, TimeoutError, json.JSONDecodeError) as e:
             last_err = e
+            if isinstance(e, TimeoutError):
+                break
     raise RuntimeError(f"ESPN scoreboard unavailable: {last_err}")
 
 
@@ -133,13 +137,32 @@ def build(raw):
     }
 
 
+def _from_poll(payload):
+    """Use the slim GitHub JSON TRMNL already polled, including a `data` wrap."""
+    if not isinstance(payload, dict):
+        return None
+    src = payload
+    if not src.get("games") and isinstance(src.get("data"), dict):
+        src = src["data"]
+    games = src.get("games")
+    if not isinstance(games, list) or not games:
+        return None
+    return {
+        "week_number": src.get("week_number"),
+        "games": games[:MAX_GAMES],
+        "generated": src.get("generated") or datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
+        "error": "",
+    }
+
+
 def run(input):
-    """Fetch ESPN live. If that fails, keep games already polled from GitHub."""
+    """Prefer GitHub-polled scores. ESPN is only a short fallback."""
+    cached = _from_poll(input)
+    if cached:
+        return cached
     try:
         return build(fetch())
     except Exception as e:
-        if input.get("games"):
-            return input
         return {
             "week_number": None,
             "games": [],

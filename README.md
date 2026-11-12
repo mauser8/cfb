@@ -2,7 +2,7 @@
 
 College football scores for a [TRMNL](https://usetrmnl.com) private plugin.
 
-ESPN’s scoreboard is about 1MB, which is over TRMNL’s 100KB polling cap, so the plugin uses a serverless transform (`src/transform.py`) to fetch and trim it. GitHub Actions also writes a compact `docs/schedule.json` every 30 minutes as a backup.
+ESPN’s scoreboard is about 1MB, which is over TRMNL’s 100KB polling cap and can time out the 5-second serverless VM. GitHub Actions fetches ESPN every 30 minutes into `docs/schedule.json`. The transform prefers that payload and only hits ESPN as a short fallback.
 
 ## TRMNL setup
 

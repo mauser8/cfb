@@ -11,14 +11,14 @@ from transform import build, fetch, run  # noqa: E402
 
 def main():
     print("Fetching FBS scoreboard from ESPN...")
-    payload = run({})
-    if payload.get("error"):
-        print(f"error: {payload['error']}", file=sys.stderr)
-        try:
-            raw = fetch()
-            print(f"  raw payload: {len(json.dumps(raw)) / 1024:.1f} KB")
-            payload = build(raw)
-        except Exception:
+    try:
+        raw = fetch()
+        print(f"  raw payload: {len(json.dumps(raw)) / 1024:.1f} KB")
+        payload = build(raw)
+    except Exception as e:
+        print(f"error: {e}", file=sys.stderr)
+        payload = run({})
+        if payload.get("error") or not payload.get("games"):
             sys.exit(1)
 
     print(f"  {len(payload['games'])} games after filter/sort")
